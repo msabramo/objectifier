@@ -7,3 +7,4 @@ python:
   - 3.2
 
 script: python setup.py test
+
