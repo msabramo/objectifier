@@ -1,4 +1,24 @@
 import json
+import xml.etree.ElementTree
+
+
+def arrayify_etree(e):
+    if isinstance(e, list):
+        if len(e) == 1:
+            return arrayify_etree(e[0])
+        elif len(e) > 1 and e[0].tag == e[1].tag:
+            return {e[0].tag: [arrayify_etree(x.getchildren()) for x in e]}
+        else:
+            return dict([(x.tag, x.text) for x in e])
+    elif len(e.getchildren()) > 0:
+        return {e.tag: arrayify_etree(e.getchildren())}
+    else:
+        return {e.tag: e.text}
+
+
+def arrayify_xml(xml_str):
+    return arrayify_etree(xml.etree.ElementTree.fromstring(xml_str))
+
 
 class Objectifier(object):
     def __init__(self, response_data):
@@ -11,7 +31,10 @@ class Objectifier(object):
             try:
                 self.response_data = json.loads(response_data)
             except ValueError:
-                self.response_data = response_data
+                try:
+                    self.response_data = arrayify_xml(response_data)
+                except xml.etree.ElementTree.ParseError:
+                    self.response_data = response_data
             except TypeError:
                 self.response_data = response_data
 

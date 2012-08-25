@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from objectifier import Objectifier
+from objectifier import Objectifier, arrayify_xml
 
 
 class BasicTests(TestCase):
@@ -129,5 +129,58 @@ class BasicTests(TestCase):
             }
         """.strip()
         obj = Objectifier(people_json)
+        self.assertEqual(repr(obj), '<Objectifier#dict People=dict>')
+        self.assertEqual(obj.People.Person[0].Name, 'Marc')
+
+
+class XMLTests(TestCase):
+
+    def get_books_xml(self):
+        return """
+            <?xml version="1.0" encoding="utf-8"?>
+            <Books>
+                <Items>
+                    <Item>
+                        <ISBN>0321558235</ISBN>
+                    </Item>
+                    <Item>
+                        <ISBN>9780321558237</ISBN>
+                    </Item>
+                </Items>
+            </Books>
+        """.strip()
+
+    def get_people_xml(self):
+        return """
+            <?xml version="1.0" encoding="utf-8"?>
+            <People>
+                <Person>
+                    <Name>Marc</Name>
+                    <Age>37</Age>
+                </Person>
+                <Person>
+                    <Name>Zach</Name>
+                    <Age>3</Age>
+                </Person>
+            </People>
+        """.strip()
+
+    def test_arrayify_books_xml(self):
+        a = arrayify_xml(self.get_books_xml())
+        self.assertEqual(a['Books']['Items']['Item'][0]['ISBN'], '0321558235')
+        self.assertEqual(a['Books']['Items']['Item'][1]['ISBN'], '9780321558237')
+
+    def test_objectify_books_xml(self):
+        obj = Objectifier(self.get_books_xml())
+        self.assertEqual(repr(obj), '<Objectifier#dict Books=dict>')
+        self.assertEqual(obj.Books.Items.Item[0].ISBN, '0321558235')
+        self.assertEqual(obj.Books.Items.Item[1].ISBN, '9780321558237')
+
+    def test_arrayify_people_xml(self):
+        a = arrayify_xml(self.get_people_xml())
+        self.assertEqual(a['People']['Person'][0]['Name'], 'Marc')
+
+    def test_objectify_people_xml(self):
+        obj = Objectifier(self.get_people_xml())
         self.assertEqual(repr(obj), '<Objectifier#dict People=dict>')
         self.assertEqual(obj.People.Person[0].Name, 'Marc')
