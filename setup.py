@@ -9,8 +9,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-with open("README.rst") as file:
-    long_description = file.read()
+long_description = open("README.rst").read()
 
 setup(
     name='objectifier',

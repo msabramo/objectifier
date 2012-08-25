@@ -1,4 +1,7 @@
-import json
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 class Objectifier(object):
     def __init__(self, response_data):
