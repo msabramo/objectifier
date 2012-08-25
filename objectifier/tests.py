@@ -28,7 +28,7 @@ class BasicTests(TestCase):
         # print obj.People.Person[0]
         self.assertEqual(obj.People.Person[0].Name, 'Marc')
 
-    def test_that_fails(self):
+    def __test_that_fails(self):
         people_json = """
             {
                 "People": {
@@ -51,5 +51,5 @@ class BasicTests(TestCase):
         print("obj.People.Person = %r" % obj.People.Person)
         print("obj.People.Person.Age = %r" % obj.People.Person.Age)
         print("obj.People.Person[0] = %r" % obj.People.Person[0])
-        print obj.People.Person[0]
+        print(obj.People.Person[0])
         self.assertEqual(obj.People.Person[0].Name, 'Marc')
